@@ -1,8 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
-const dotenv = require("dotenv");
+const router = require("./routes");
 
-dotenv.config();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -11,5 +11,7 @@ app.get("/", (_, res) => {
 		message: "server is running",
 	});
 });
+
+app.use(router);
 
 module.exports = app;
