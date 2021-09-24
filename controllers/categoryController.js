@@ -17,10 +17,6 @@ class CategoryController {
 		try {
 			const condition = {};
 			const categories = await CategoryModel.findAll(condition);
-			console.log(
-				"🚀 ~ file: categoryController.js ~ line 20 ~ CategoryController ~ findAll= ~ categories",
-				categories
-			);
 			const categoriesTransform = CategoryTransformer.list(categories);
 			res.status(200).json(categoriesTransform);
 		} catch (error) {
@@ -33,6 +29,29 @@ class CategoryController {
 			const { id } = req.params;
 			const { name } = req.body;
 			const category = await CategoryModel.update(id, { name });
+			const categoryTransform = CategoryTransformer.list(category);
+			res.status(200).json(categoryTransform);
+		} catch (error) {
+			next(error);
+		}
+	};
+
+	static updateStatus = async (req, res, next) => {
+		try {
+			const { id } = req.params;
+			const { isActive } = req.body;
+			const category = await CategoryModel.update(id, { isActive });
+			const categoryTransform = CategoryTransformer.list(category);
+			res.status(200).json(categoryTransform);
+		} catch (error) {
+			next(error);
+		}
+	};
+
+	static delete = async (req, res, next) => {
+		try {
+			const { id } = req.query;
+			const category = await CategoryModel.update(id, { isDeleted: true });
 			const categoryTransform = CategoryTransformer.list(category);
 			res.status(200).json(categoryTransform);
 		} catch (error) {

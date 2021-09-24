@@ -14,7 +14,7 @@ class CategoryModel {
 
 	static findAll = async (condition = {}, filter = {}) => {
 		try {
-			return await Category.find(condition);
+			return await Category.find({ ...condition, isDeleted: false });
 		} catch (error) {
 			throw error;
 		}
