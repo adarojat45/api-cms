@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
+const mongoose = require("../config/mongoose");
 const CategorySchema = require("../schemas/categorySchema");
 
 const Category = mongoose.model("Category", CategorySchema);
 
 class CategoryModel {
-	static insert = async (payload = {}) => {
+	static create = async (payload = {}) => {
 		try {
 			return await Category.create(payload);
 		} catch (error) {
