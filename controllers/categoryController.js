@@ -17,13 +17,25 @@ class CategoryController {
 		try {
 			const condition = {};
 			const categories = await CategoryModel.findAll(condition);
+			console.log(
+				"🚀 ~ file: categoryController.js ~ line 20 ~ CategoryController ~ findAll= ~ categories",
+				categories
+			);
 			const categoriesTransform = CategoryTransformer.list(categories);
 			res.status(200).json(categoriesTransform);
 		} catch (error) {
-			console.log(
-				"🚀 ~ file: categoryController.js ~ line 23 ~ CategoryController ~ findAll= ~ error",
-				categories
-			);
+			next(error);
+		}
+	};
+
+	static update = async (req, res, next) => {
+		try {
+			const { id } = req.params;
+			const { name } = req.body;
+			const category = await CategoryModel.update(id, { name });
+			const categoryTransform = CategoryTransformer.list(category);
+			res.status(200).json(categoryTransform);
+		} catch (error) {
 			next(error);
 		}
 	};

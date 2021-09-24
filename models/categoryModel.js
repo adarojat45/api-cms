@@ -30,7 +30,9 @@ class CategoryModel {
 
 	static update = async (condition = {}, payload = {}) => {
 		try {
-			return await Category.findOneAndUpdate(condition, payload);
+			return await Category.findOneAndUpdate(condition, payload, {
+				returnOriginal: false,
+			});
 		} catch (error) {
 			throw error;
 		}
