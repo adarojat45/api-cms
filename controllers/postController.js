@@ -46,6 +46,17 @@ class PostController {
 		}
 	};
 
+	static findOne = async (req, res, next) => {
+		try {
+			const { id } = req.params;
+			const post = await PostModel.findOne({ _id: id });
+			const postTransform = PostTransformer.detail(post);
+			res.status(200).json(postTransform);
+		} catch (error) {
+			next(error);
+		}
+	};
+
 	static update = async (req, res, next) => {
 		try {
 			const { id } = req.params;
