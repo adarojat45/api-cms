@@ -1,6 +1,7 @@
 const PostModel = require("../models/postModel");
 const PostTransformer = require("../transformers/postTransformer");
 const moment = require("moment");
+const Algolia = require("../services/algolia");
 
 class PostController {
 	static create = async (req, res, next) => {
@@ -25,7 +26,7 @@ class PostController {
 				tags,
 				isMarkdown,
 				_categories,
-				isActive: true,
+				isActive: false,
 			});
 			const post = await PostModel.findOne({ slug: newPost.slug });
 			const postTransform = PostTransformer.detail(post);
@@ -86,6 +87,14 @@ class PostController {
 			const { isActive } = req.body;
 			const post = await PostModel.update({ _id: id }, { isActive });
 			const postTransform = PostTransformer.list(post);
+			if (isActive) {
+				await Algolia.add("posts", {
+					...postTransform,
+					objectID: postTransform.id,
+				});
+			} else {
+				await Algolia.remove("posts", postTransform.id);
+			}
 			res.status(200).json(postTransform);
 		} catch (error) {
 			next(error);
@@ -97,6 +106,7 @@ class PostController {
 			const { id } = req.params;
 			const post = await PostModel.update({ _id: id }, { isDeleted: true });
 			const postTransform = PostTransformer.list(post);
+			await Algolia.remove("posts", postTransform.id);
 			res.status(200).json(postTransform);
 		} catch (error) {
 			next(error);

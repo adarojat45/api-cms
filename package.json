@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/adarojat45/api-cms#readme",
   "dependencies": {
+    "algoliasearch": "^4.10.5",
     "axios": "^0.21.4",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
