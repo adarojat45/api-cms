@@ -83,8 +83,8 @@ class PostController {
 
 	static delete = async (req, res, next) => {
 		try {
-			const { id } = req.query;
-			const post = await PostModel.update(id, { isDeleted: true });
+			const { id } = req.params;
+			const post = await PostModel.update({ _id: id }, { isDeleted: true });
 			const postTransform = PostTransformer.list(post);
 			res.status(200).json(postTransform);
 		} catch (error) {
