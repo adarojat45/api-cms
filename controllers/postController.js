@@ -28,7 +28,7 @@ class PostController {
 				isActive: true,
 			});
 			const post = await PostModel.findOne({ slug: newPost.slug });
-			const postTransform = PostTransformer.list(post);
+			const postTransform = PostTransformer.detail(post);
 			res.status(201).json(postTransform);
 		} catch (error) {
 			next(error);
@@ -60,9 +60,20 @@ class PostController {
 	static update = async (req, res, next) => {
 		try {
 			const { id } = req.params;
-			const { name } = req.body;
-			const post = await PostModel.update(id, { name });
-			const categoryTransform = PostTransformer.list(post);
+			const {
+				name,
+				description,
+				tags,
+				categories,
+				isMarkdown,
+				excerpt,
+			} = req.body;
+			const _categories = categories.map((category) => category.id);
+			const post = await PostModel.update(
+				{ _id: id },
+				{ name, description, tags, _categories, isMarkdown, excerpt }
+			);
+			const categoryTransform = PostTransformer.detail(post);
 			res.status(200).json(categoryTransform);
 		} catch (error) {
 			next(error);
