@@ -2,6 +2,7 @@ const PostModel = require("../models/postModel");
 const PostTransformer = require("../transformers/postTransformer");
 const moment = require("moment");
 const Algolia = require("../services/algolia");
+const Netlify = require("../services/netlify");
 
 class PostController {
 	static create = async (req, res, next) => {
@@ -95,6 +96,7 @@ class PostController {
 			} else {
 				await Algolia.remove("posts", postTransform.id);
 			}
+			await Netlify.buildHook();
 			res.status(200).json(postTransform);
 		} catch (error) {
 			next(error);
