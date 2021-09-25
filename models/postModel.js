@@ -34,7 +34,7 @@ class PostModel {
 		try {
 			return await Post.findOneAndUpdate(condition, payload, {
 				returnOriginal: false,
-			});
+			}).populate("_categories");
 		} catch (error) {
 			throw error;
 		}

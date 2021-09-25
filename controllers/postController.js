@@ -73,7 +73,7 @@ class PostController {
 		try {
 			const { id } = req.params;
 			const { isActive } = req.body;
-			const post = await PostModel.update(id, { isActive });
+			const post = await PostModel.update({ _id: id }, { isActive });
 			const postTransform = PostTransformer.list(post);
 			res.status(200).json(postTransform);
 		} catch (error) {
