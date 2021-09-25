@@ -28,7 +28,7 @@ class CategoryController {
 		try {
 			const { id } = req.params;
 			const { name } = req.body;
-			const category = await CategoryModel.update(id, { name });
+			const category = await CategoryModel.update({ _id: id }, { name });
 			const categoryTransform = CategoryTransformer.list(category);
 			res.status(200).json(categoryTransform);
 		} catch (error) {
@@ -40,7 +40,7 @@ class CategoryController {
 		try {
 			const { id } = req.params;
 			const { isActive } = req.body;
-			const category = await CategoryModel.update(id, { isActive });
+			const category = await CategoryModel.update({ _id: id }, { isActive });
 			const categoryTransform = CategoryTransformer.list(category);
 			res.status(200).json(categoryTransform);
 		} catch (error) {
@@ -51,7 +51,10 @@ class CategoryController {
 	static delete = async (req, res, next) => {
 		try {
 			const { id } = req.query;
-			const category = await CategoryModel.update(id, { isDeleted: true });
+			const category = await CategoryModel.update(
+				{ _id: id },
+				{ isDeleted: true }
+			);
 			const categoryTransform = CategoryTransformer.list(category);
 			res.status(200).json(categoryTransform);
 		} catch (error) {

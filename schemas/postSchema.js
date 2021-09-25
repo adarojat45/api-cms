@@ -5,16 +5,18 @@ const { Schema } = mongoose;
 const postSchema = new Schema({
 	name: {
 		type: String,
-		required,
+		required: true,
 	},
 	slug: {
 		type: String,
-		required,
-		unique,
+		required: true,
+		unique: true,
+	},
+	excerpt: {
+		type: String,
 	},
 	description: {
 		type: String,
-		required,
 	},
 	tags: [String],
 	_categories: [
@@ -39,7 +41,7 @@ const postSchema = new Schema({
 		type: Boolean,
 		default: false,
 	},
-	ceatedAt: {
+	createdAt: {
 		type: Date,
 		default: Date.now,
 	},
