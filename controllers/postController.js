@@ -16,7 +16,7 @@ class PostController {
 				excerpt,
 			} = req.body;
 			const _categories = categories.map((category) => category.id);
-			let slug = name.replace(" ", "-");
+			let slug = name.toLowerCase().replace(" ", "-");
 			const checkPost = await PostModel.findOne({ slug });
 			if (checkPost) slug = slug + "-" + moment().format("YYYYMMDDHHss");
 			const newPost = await PostModel.create({

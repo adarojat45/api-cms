@@ -5,6 +5,7 @@ class CategoryTransformer {
 		const schema = {
 			id: "id",
 			name: "name",
+			slug: "slug",
 			isActive: "isActive",
 			isDeleted: "isDeleted",
 			createdAt: "createdAt",
