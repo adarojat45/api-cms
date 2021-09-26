@@ -8,7 +8,10 @@ class Auth {
 			if (!token)
 				throw { code: 401, name: "Unauthorized", message: "Invalid token" };
 			const userDecode = Jwt.verify(token);
-			const user = await UserModel.findOne({ email: userDecode.email });
+			const user = await UserModel.findOne({
+				email: userDecode.email,
+				isActive: true,
+			});
 
 			if (!user)
 				throw { code: 401, name: "Unauthorized", message: "Invalid token" };
