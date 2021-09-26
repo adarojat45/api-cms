@@ -24,11 +24,11 @@ class UserController {
 	static login = async (req, res, next) => {
 		try {
 			const { email, password } = req.body;
-			const user = await UserModel.findOne({ email });
+			const user = await UserModel.findOne({ email, isActive: true });
 			if (!user)
 				throw {
 					code: 401,
-					name: "Unauthroized",
+					name: "Unauthorized",
 					message: "Email or password invalid",
 				};
 
@@ -37,7 +37,7 @@ class UserController {
 			if (!passwordCheck)
 				throw {
 					code: 401,
-					name: "Unauthroized",
+					name: "Unauthorized",
 					message: "Email or password invalid",
 				};
 

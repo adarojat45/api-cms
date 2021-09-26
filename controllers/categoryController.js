@@ -5,7 +5,10 @@ class CategoryController {
 	static create = async (req, res, next) => {
 		try {
 			const { name } = req.body;
-			const category = await CategoryModel.create({ name, isActive: true });
+			let slug = name.toLowerCase().replace(" ", "-");
+			const checkCategory = await CategoryModel.findOne({ slug });
+			if (checkCategory) slug = slug + "-" + moment().format("YYYYMMDDHHss");
+			const category = await CategoryModel.create({ name, slug, isActive: true });
 			const categoryTransform = CategoryTransformer.list(category);
 			res.status(201).json(categoryTransform);
 		} catch (error) {
