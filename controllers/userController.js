@@ -1,7 +1,7 @@
 const UserModel = require("../models/userModel");
 const Bcrypt = require("../helpers/bcrypt");
 const UserTransformer = require("../transformers/userTransformer");
-
+const Jwt = require("../helpers/jwt");
 class UserController {
 	static create = async (req, res, next) => {
 		try {
@@ -16,6 +16,34 @@ class UserController {
 			});
 			const userTransform = UserTransformer.list(user);
 			res.status(201).json(userTransform);
+		} catch (error) {
+			next(error);
+		}
+	};
+
+	static login = async (req, res, next) => {
+		try {
+			const { email, password } = req.body;
+			const user = await UserModel.findOne({ email });
+			if (!user)
+				throw {
+					code: 401,
+					name: "Unauthroized",
+					message: "Email or password invalid",
+				};
+
+			const passwordCheck = Bcrypt.compare(password, user.password);
+
+			if (!passwordCheck)
+				throw {
+					code: 401,
+					name: "Unauthroized",
+					message: "Email or password invalid",
+				};
+
+			const token = Jwt.sign({ id: user.id, email: user.email });
+
+			res.status(200).json({ token });
 		} catch (error) {
 			next(error);
 		}
