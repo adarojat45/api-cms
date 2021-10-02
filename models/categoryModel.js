@@ -22,7 +22,7 @@ class CategoryModel {
 
 	static findOne = async (condition = {}) => {
 		try {
-			return await Category.findOne(condition);
+			return await Category.findOne(condition).populate("_posts");
 		} catch (error) {
 			throw error;
 		}

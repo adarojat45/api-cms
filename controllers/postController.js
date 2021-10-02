@@ -1,4 +1,5 @@
 const PostModel = require("../models/postModel");
+const CategoryModel = require("../models/categoryModel");
 const PostTransformer = require("../transformers/postTransformer");
 const moment = require("moment");
 const Algolia = require("../services/algolia");
@@ -31,6 +32,11 @@ class PostController {
 			});
 			const post = await PostModel.findOne({ slug: newPost.slug });
 			const postTransform = PostTransformer.detail(post);
+
+			await CategoryModel.update(
+				{ _id: _categories },
+				{ $addToSet: { _posts: { $each: [postTransform.id] } } }
+			);
 			res.status(201).json(postTransform);
 		} catch (error) {
 			next(error);
@@ -75,9 +81,19 @@ class PostController {
 				{ _id: id },
 				{ name, description, tags, _categories, isMarkdown, excerpt }
 			);
-			const categoryTransform = PostTransformer.detail(post);
-			res.status(200).json(categoryTransform);
+			const postTransform = PostTransformer.detail(post);
+
+			await CategoryModel.update(
+				{ _id: _categories },
+				{ $addToSet: { _posts: { $each: [postTransform.id] } } }
+			);
+
+			res.status(200).json(postTransform);
 		} catch (error) {
+			console.log(
+				"🚀 ~ file: postController.js ~ line 93 ~ PostController ~ update= ~ error",
+				error
+			);
 			next(error);
 		}
 	};

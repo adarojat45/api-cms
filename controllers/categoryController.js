@@ -27,6 +27,18 @@ class CategoryController {
 		}
 	};
 
+	static findOne = async (req, res, next) => {
+		try {
+			const { id } = req.params;
+			const condition = { _id: id };
+			const category = await CategoryModel.findOne(condition);
+			const categoryTransform = CategoryTransformer.detail(category);
+			res.status(200).json(categoryTransform);
+		} catch (error) {
+			next(error);
+		}
+	};
+
 	static update = async (req, res, next) => {
 		try {
 			const { id } = req.params;
