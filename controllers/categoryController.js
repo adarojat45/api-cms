@@ -53,7 +53,7 @@ class CategoryController {
 
 	static delete = async (req, res, next) => {
 		try {
-			const { id } = req.query;
+			const { id } = req.params;
 			const category = await CategoryModel.update(
 				{ _id: id },
 				{ isDeleted: true }
