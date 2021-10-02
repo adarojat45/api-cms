@@ -37,6 +37,16 @@ class CategoryModel {
 			throw error;
 		}
 	};
+
+	static updateMany = async (condition = {}, payload = {}) => {
+		try {
+			return await Category.updateMany(condition, payload, {
+				returnOriginal: false,
+			});
+		} catch (error) {
+			throw error;
+		}
+	};
 }
 
 module.exports = CategoryModel;

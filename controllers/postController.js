@@ -33,7 +33,7 @@ class PostController {
 			const post = await PostModel.findOne({ slug: newPost.slug });
 			const postTransform = PostTransformer.detail(post);
 
-			await CategoryModel.update(
+			await CategoryModel.updateMany(
 				{ _id: _categories },
 				{ $addToSet: { _posts: { $each: [postTransform.id] } } }
 			);
@@ -83,7 +83,7 @@ class PostController {
 			);
 			const postTransform = PostTransformer.detail(post);
 
-			await CategoryModel.update(
+			await CategoryModel.updateMany(
 				{ _id: _categories },
 				{ $addToSet: { _posts: { $each: [postTransform.id] } } }
 			);
