@@ -23,6 +23,20 @@ beforeAll(async () => {
 	};
 	const user = await UserModel.create(userPayload);
 	token = Jwt.sign({ id: user.id, email: user.email });
+	let postsPayload = [];
+	for (let i = 0; i < 20; i++) {
+		const payload = {
+			name: `Post name ${i}`,
+			slug: `post-name-${i}`,
+			description: `Post description ${i}`,
+			excerpt: `Post excerpt ${i}`,
+			tags: ["tags1", "tags2"],
+			categories: [],
+			isMakrdown: true,
+		};
+		postsPayload.push(payload);
+	}
+	await PostModel.create(postsPayload);
 });
 
 afterAll(async () => {
@@ -40,7 +54,19 @@ describe("Post test", () => {
 				.then(({ body, status }) => {
 					expect(status).toBe(200);
 					expect(body).toEqual(expect.any(Array));
-					// expect(body).toHaveProperty("id");
+					expect(body.length).toBe(20);
+					expect(body[0]).toHaveProperty("id");
+					expect(body[0]).toHaveProperty("name");
+					expect(body[0]).toHaveProperty("excerpt");
+					expect(body[0]).toHaveProperty("tags");
+					expect(body[0].tags).toEqual(expect.any(Array));
+					expect(body[0].tags[0]).toEqual(expect.any(String));
+					expect(body[0]).toHaveProperty("isMarkdown");
+					expect(body[0]).toHaveProperty("categories");
+					expect(body[0].categories).toEqual(expect.any(Array));
+					expect(body[0]).toHaveProperty("isActive");
+					expect(body[0]).toHaveProperty("isDeleted");
+					expect(body[0]).not.toHaveProperty("description");
 					done();
 				})
 				.catch((err) => {
