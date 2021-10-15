@@ -12,6 +12,7 @@ const User = mongoose.model("User", UserSchema);
 const Post = mongoose.model("Post", PostSchema);
 
 let token = "";
+let posts = [];
 
 beforeAll(async () => {
 	const userPayload = {
@@ -36,7 +37,8 @@ beforeAll(async () => {
 		};
 		postsPayload.push(payload);
 	}
-	await PostModel.create(postsPayload);
+	const newPosts = await PostModel.create(postsPayload);
+	posts = newPosts;
 });
 
 afterAll(async () => {
@@ -119,6 +121,65 @@ describe("Post test", () => {
 					expect(body).toHaveProperty("isActive");
 					expect(body).toHaveProperty("isDeleted");
 					expect(body).toHaveProperty("description");
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+	});
+
+	describe("POST /posts/:id", () => {
+		test("[success - 200] GET /posts/:id should be return an object and status code 200", (done) => {
+			request(app)
+				.get(`/posts/${posts[0].id}`)
+				.set("token", token)
+				.then(({ status, body }) => {
+					expect(status).toBe(200);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("id");
+					expect(body).toHaveProperty("name");
+					expect(body).toHaveProperty("excerpt");
+					expect(body).toHaveProperty("tags");
+					expect(body.tags).toEqual(expect.any(Array));
+					expect(body.tags[0]).toEqual(expect.any(String));
+					expect(body).toHaveProperty("isMarkdown");
+					expect(body).toHaveProperty("categories");
+					expect(body.categories).toEqual(expect.any(Array));
+					expect(body).toHaveProperty("isActive");
+					expect(body).toHaveProperty("isDeleted");
+					expect(body).toHaveProperty("description");
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+
+		test("[failed - 200] GET /posts/:id without token should be return error", (done) => {
+			request(app)
+				.get(`/posts/${posts[0].id}`)
+				.then(({ status, body }) => {
+					expect(status).toBe(401);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("name", "Unauthorized");
+					expect(body).toHaveProperty("message", "Invalid token");
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+
+		test("[failed - 404] GET /posts/:id without valid id should be return error", (done) => {
+			request(app)
+				.get(`/posts/6169cff54ef04d6caef22038`)
+				.set("token", token)
+				.then(({ status, body }) => {
+					expect(status).toBe(404);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("name", "NotFound");
+					expect(body).toHaveProperty("message", "Post not found");
 					done();
 				})
 				.catch((err) => {

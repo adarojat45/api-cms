@@ -58,6 +58,12 @@ class PostController {
 		try {
 			const { id } = req.params;
 			const post = await PostModel.findOne({ _id: id });
+			if (!post)
+				throw {
+					name: "NotFound",
+					message: "Post not found",
+					code: 404,
+				};
 			const postTransform = PostTransformer.detail(post);
 			res.status(200).json(postTransform);
 		} catch (error) {
