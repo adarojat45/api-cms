@@ -10,6 +10,12 @@ const errorHandler = (err, req, res, next) => {
 			message = err.message;
 			break;
 
+		case "NotFound":
+			code = err.code;
+			name = err.name;
+			message = err.message;
+			break;
+
 		default:
 			break;
 	}

@@ -5,7 +5,10 @@ main().catch((err) => {
 });
 
 async function main() {
-	const DB_NAME = process.env.DB_NAME || "ajatdarojat45_dev";
+	const DB_NAME =
+		process.env.NODE_ENV === "test"
+			? process.env.DB_NAME + "_test"
+			: process.env.DB_NAME;
 	const DB_URL =
 		`${process.env.DB_URL}/${DB_NAME}` || `mongodb://localhost:27017/${DB_NAME}`;
 

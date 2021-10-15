@@ -32,6 +32,12 @@ class CategoryController {
 			const { id } = req.params;
 			const condition = { _id: id };
 			const category = await CategoryModel.findOne(condition);
+			if (!category)
+				throw {
+					name: "NotFound",
+					message: "Category not found",
+					code: 404,
+				};
 			const categoryTransform = CategoryTransformer.detail(category);
 			res.status(200).json(categoryTransform);
 		} catch (error) {
@@ -44,6 +50,12 @@ class CategoryController {
 			const { id } = req.params;
 			const { name } = req.body;
 			const category = await CategoryModel.update({ _id: id }, { name });
+			if (!category)
+				throw {
+					name: "NotFound",
+					message: "Category not found",
+					code: 404,
+				};
 			const categoryTransform = CategoryTransformer.list(category);
 			res.status(200).json(categoryTransform);
 		} catch (error) {
@@ -56,6 +68,12 @@ class CategoryController {
 			const { id } = req.params;
 			const { isActive } = req.body;
 			const category = await CategoryModel.update({ _id: id }, { isActive });
+			if (!category)
+				throw {
+					name: "NotFound",
+					message: "Category not found",
+					code: 404,
+				};
 			const categoryTransform = CategoryTransformer.list(category);
 			res.status(200).json(categoryTransform);
 		} catch (error) {
@@ -70,6 +88,12 @@ class CategoryController {
 				{ _id: id },
 				{ isDeleted: true }
 			);
+			if (!category)
+				throw {
+					name: "NotFound",
+					message: "Category not found",
+					code: 404,
+				};
 			const categoryTransform = CategoryTransformer.list(category);
 			res.status(200).json(categoryTransform);
 		} catch (error) {

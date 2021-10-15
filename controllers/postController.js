@@ -58,6 +58,12 @@ class PostController {
 		try {
 			const { id } = req.params;
 			const post = await PostModel.findOne({ _id: id });
+			if (!post)
+				throw {
+					name: "NotFound",
+					message: "Post not found",
+					code: 404,
+				};
 			const postTransform = PostTransformer.detail(post);
 			res.status(200).json(postTransform);
 		} catch (error) {
@@ -81,6 +87,12 @@ class PostController {
 				{ _id: id },
 				{ name, description, tags, _categories, isMarkdown, excerpt }
 			);
+			if (!post)
+				throw {
+					name: "NotFound",
+					message: "Post not found",
+					code: 404,
+				};
 			const postTransform = PostTransformer.detail(post);
 
 			await CategoryModel.updateMany(
@@ -90,10 +102,6 @@ class PostController {
 
 			res.status(200).json(postTransform);
 		} catch (error) {
-			console.log(
-				"🚀 ~ file: postController.js ~ line 93 ~ PostController ~ update= ~ error",
-				error
-			);
 			next(error);
 		}
 	};
@@ -103,6 +111,12 @@ class PostController {
 			const { id } = req.params;
 			const { isActive } = req.body;
 			const post = await PostModel.update({ _id: id }, { isActive });
+			if (!post)
+				throw {
+					name: "NotFound",
+					message: "Post not found",
+					code: 404,
+				};
 			const postTransform = PostTransformer.list(post);
 			if (isActive) {
 				await Algolia.add("posts", {
@@ -123,6 +137,12 @@ class PostController {
 		try {
 			const { id } = req.params;
 			const post = await PostModel.update({ _id: id }, { isDeleted: true });
+			if (!post)
+				throw {
+					name: "NotFound",
+					message: "Post not found",
+					code: 404,
+				};
 			const postTransform = PostTransformer.list(post);
 			await Algolia.remove("posts", postTransform.id);
 			res.status(200).json(postTransform);
