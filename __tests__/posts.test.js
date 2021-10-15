@@ -88,4 +88,42 @@ describe("Post test", () => {
 				});
 		});
 	});
+
+	describe("POST /posts", () => {
+		test("[success - 201] POST /posts should be return an object and status code 201", (done) => {
+			const postPayload = {
+				name: `Post name`,
+				description: `Post description`,
+				excerpt: `Post excerpt`,
+				tags: ["tags1", "tags2"],
+				categories: [],
+				isMakrdown: true,
+			};
+
+			request(app)
+				.post("/posts")
+				.send(postPayload)
+				.set("token", token)
+				.then(({ status, body }) => {
+					expect(status).toBe(201);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("id");
+					expect(body).toHaveProperty("name");
+					expect(body).toHaveProperty("excerpt");
+					expect(body).toHaveProperty("tags");
+					expect(body.tags).toEqual(expect.any(Array));
+					expect(body.tags[0]).toEqual(expect.any(String));
+					expect(body).toHaveProperty("isMarkdown");
+					expect(body).toHaveProperty("categories");
+					expect(body.categories).toEqual(expect.any(Array));
+					expect(body).toHaveProperty("isActive");
+					expect(body).toHaveProperty("isDeleted");
+					expect(body).toHaveProperty("description");
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+	});
 });
