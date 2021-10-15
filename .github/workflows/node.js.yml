@@ -34,4 +34,4 @@ jobs:
     - run: PORT=3000 DB_NAME=ajatdarojat45_dev DB_URL=mongodb://localhost:27017 JWT_SECRET=rahasia 
     - run: npm ci
     - run: npm run build --if-present
-    -run: npm test
+    - run: npm test
