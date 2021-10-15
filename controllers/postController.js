@@ -111,6 +111,12 @@ class PostController {
 			const { id } = req.params;
 			const { isActive } = req.body;
 			const post = await PostModel.update({ _id: id }, { isActive });
+			if (!post)
+				throw {
+					name: "NotFound",
+					message: "Post not found",
+					code: 404,
+				};
 			const postTransform = PostTransformer.list(post);
 			if (isActive) {
 				await Algolia.add("posts", {

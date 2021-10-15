@@ -156,7 +156,7 @@ describe("Post test", () => {
 				});
 		});
 
-		test("[failed - 200] GET /posts/:id without token should be return error", (done) => {
+		test("[failed - 401] GET /posts/:id without token should be return error", (done) => {
 			request(app)
 				.get(`/posts/${posts[0].id}`)
 				.then(({ status, body }) => {
@@ -224,7 +224,7 @@ describe("Post test", () => {
 				});
 		});
 
-		test("[failed - 200] PUT /posts/:id without token should be return error", (done) => {
+		test("[failed - 401] PUT /posts/:id without token should be return error", (done) => {
 			request(app)
 				.put(`/posts/${posts[0].id}`)
 				.send(postPayload)
@@ -243,6 +243,61 @@ describe("Post test", () => {
 		test("[failed - 404] PUT /posts/:id without valid id should be return error", (done) => {
 			request(app)
 				.put(`/posts/6169cff54ef04d6caef22038`)
+				.set("token", token)
+				.send(postPayload)
+				.then(({ status, body }) => {
+					expect(status).toBe(404);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("name", "NotFound");
+					expect(body).toHaveProperty("message", "Post not found");
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+	});
+
+	describe("PATCH /posts/:id/updateStatus", () => {
+		const postPayload = {
+			isActive: true,
+		};
+		test("[success - 200] PATCH /posts/:id/updateStatus should be return an object and status code 200", (done) => {
+			request(app)
+				.patch(`/posts/${posts[0].id}/updateStatus`)
+				.set("token", token)
+				.send(postPayload)
+				.then(({ status, body }) => {
+					expect(status).toBe(200);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("id");
+					expect(body).toHaveProperty("isActive", true);
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+
+		test("[failed - 401] PATCH /posts/:id/updateStatus without token should be return error", (done) => {
+			request(app)
+				.patch(`/posts/${posts[0].id}`)
+				.send(postPayload)
+				.then(({ status, body }) => {
+					expect(status).toBe(401);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("name", "Unauthorized");
+					expect(body).toHaveProperty("message", "Invalid token");
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+
+		test("[failed - 404] PUT /posts/:id without valid id should be return error", (done) => {
+			request(app)
+				.patch(`/posts/6169cff54ef04d6caef22038/updateStatus`)
 				.set("token", token)
 				.send(postPayload)
 				.then(({ status, body }) => {
