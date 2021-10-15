@@ -24,7 +24,7 @@ afterAll(async () => {
 });
 
 describe("POST /login test", () => {
-	test("[Success] POST /login should be return an object with property token", (done) => {
+	test("[Success - 200] POST /login should be return an object with property token", (done) => {
 		const userPayload = {
 			email: "udin@mail.com",
 			password: "rahasia",
@@ -36,6 +36,25 @@ describe("POST /login test", () => {
 				expect(status).toBe(200);
 				expect(body).toEqual(expect.any(Object));
 				expect(body).toHaveProperty("token");
+				done();
+			})
+			.catch((err) => {
+				done(err);
+			});
+	});
+
+	test("[Failed - 401] POST /login should be return an object with property code 401", (done) => {
+		const userPayload = {
+			email: "udin@mail.com",
+			password: "rahasia2",
+		};
+		request(app)
+			.post("/users/login")
+			.send(userPayload)
+			.then(({ body, status }) => {
+				expect(status).toBe(401);
+				expect(body).toEqual(expect.any(Object));
+				expect(body).toHaveProperty("message", "Email or password invalid");
 				done();
 			})
 			.catch((err) => {

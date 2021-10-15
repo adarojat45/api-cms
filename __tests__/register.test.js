@@ -11,7 +11,7 @@ afterAll(async () => {
 });
 
 describe("POST /register test", () => {
-	test("[Success] POST /register should be return an object with property id", (done) => {
+	test("[Success - 201] POST /register should be return an object with property id", (done) => {
 		const userPayload = {
 			firstName: "Udin",
 			lastName: "Sedunia",
