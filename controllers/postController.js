@@ -87,6 +87,12 @@ class PostController {
 				{ _id: id },
 				{ name, description, tags, _categories, isMarkdown, excerpt }
 			);
+			if (!post)
+				throw {
+					name: "NotFound",
+					message: "Post not found",
+					code: 404,
+				};
 			const postTransform = PostTransformer.detail(post);
 
 			await CategoryModel.updateMany(
@@ -96,10 +102,6 @@ class PostController {
 
 			res.status(200).json(postTransform);
 		} catch (error) {
-			console.log(
-				"🚀 ~ file: postController.js ~ line 93 ~ PostController ~ update= ~ error",
-				error
-			);
 			next(error);
 		}
 	};
