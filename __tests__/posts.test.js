@@ -47,9 +47,9 @@ afterAll(async () => {
 	mongoose.disconnect();
 });
 
-describe("Post test", () => {
+describe("Post test cases", () => {
 	describe("GET /posts", () => {
-		test("[success - 200] /posts should be return an array of object with some object property", (done) => {
+		test("[success - 200] GET /posts should be return an array of object with some object property", (done) => {
 			request(app)
 				.get("/posts")
 				.set("token", token)
@@ -76,7 +76,7 @@ describe("Post test", () => {
 				});
 		});
 
-		test("[failed - 401] /posts without token should be return status code 401", (done) => {
+		test("[failed - 401] GET /posts without token should be return status code 401", (done) => {
 			request(app)
 				.get("/posts")
 				.then(({ body, status }) => {
@@ -121,6 +121,20 @@ describe("Post test", () => {
 					expect(body).toHaveProperty("isActive");
 					expect(body).toHaveProperty("isDeleted");
 					expect(body).toHaveProperty("description");
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+
+		test("[failed - 401] POST /posts without token should be return status code 401", (done) => {
+			request(app)
+				.post("/posts")
+				.then(({ body, status }) => {
+					expect(status).toBe(401);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("message", "Invalid token");
 					done();
 				})
 				.catch((err) => {
@@ -281,7 +295,7 @@ describe("Post test", () => {
 
 		test("[failed - 401] PATCH /posts/:id/updateStatus without token should be return error", (done) => {
 			request(app)
-				.patch(`/posts/${posts[0].id}`)
+				.patch(`/posts/${posts[0].id}/updateStatus`)
 				.send(postPayload)
 				.then(({ status, body }) => {
 					expect(status).toBe(401);
@@ -298,6 +312,61 @@ describe("Post test", () => {
 		test("[failed - 404] PUT /posts/:id without valid id should be return error", (done) => {
 			request(app)
 				.patch(`/posts/6169cff54ef04d6caef22038/updateStatus`)
+				.set("token", token)
+				.send(postPayload)
+				.then(({ status, body }) => {
+					expect(status).toBe(404);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("name", "NotFound");
+					expect(body).toHaveProperty("message", "Post not found");
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+	});
+
+	describe("DELETE /posts/:id", () => {
+		const postPayload = {
+			isDeleted: true,
+		};
+		test("[success - 200] DELETE /posts/:id should be return an object and status code 200", (done) => {
+			request(app)
+				.delete(`/posts/${posts[0].id}`)
+				.set("token", token)
+				.send(postPayload)
+				.then(({ status, body }) => {
+					expect(status).toBe(200);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("id");
+					expect(body).toHaveProperty("isDeleted", true);
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+
+		test("[failed - 401] DELETE /posts/:id without token should be return error", (done) => {
+			request(app)
+				.delete(`/posts/${posts[0].id}`)
+				.send(postPayload)
+				.then(({ status, body }) => {
+					expect(status).toBe(401);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("name", "Unauthorized");
+					expect(body).toHaveProperty("message", "Invalid token");
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+
+		test("[failed - 404] DELETE /posts/:id without valid id should be return error", (done) => {
+			request(app)
+				.delete(`/posts/6169cff54ef04d6caef22038`)
 				.set("token", token)
 				.send(postPayload)
 				.then(({ status, body }) => {

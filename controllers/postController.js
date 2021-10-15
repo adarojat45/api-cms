@@ -137,6 +137,12 @@ class PostController {
 		try {
 			const { id } = req.params;
 			const post = await PostModel.update({ _id: id }, { isDeleted: true });
+			if (!post)
+				throw {
+					name: "NotFound",
+					message: "Post not found",
+					code: 404,
+				};
 			const postTransform = PostTransformer.list(post);
 			await Algolia.remove("posts", postTransform.id);
 			res.status(200).json(postTransform);
