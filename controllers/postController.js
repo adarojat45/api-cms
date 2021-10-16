@@ -118,15 +118,20 @@ class PostController {
 					code: 404,
 				};
 			const postTransform = PostTransformer.list(post);
-			if (isActive) {
-				await Algolia.add("posts", {
-					...postTransform,
-					objectID: postTransform.id,
-				});
-			} else {
-				await Algolia.remove("posts", postTransform.id);
+
+			if (process.env.ALGOLIA_APP_ID && process.env.ALGOLIA_API_KEY) {
+				if (isActive) {
+					await Algolia.add("posts", {
+						...postTransform,
+						objectID: postTransform.id,
+					});
+				} else {
+					await Algolia.remove("posts", postTransform.id);
+				}
 			}
-			await Netlify.buildHook();
+			if (process.env.NETLIFY_API_URL && process.env.NETLIFY_WEBHOOK_KEY)
+				await Netlify.buildHook();
+
 			res.status(200).json(postTransform);
 		} catch (error) {
 			next(error);
@@ -143,8 +148,12 @@ class PostController {
 					message: "Post not found",
 					code: 404,
 				};
+
 			const postTransform = PostTransformer.list(post);
-			await Algolia.remove("posts", postTransform.id);
+
+			if (process.env.ALGOLIA_APP_ID && process.env.ALGOLIA_API_KEY)
+				await Algolia.remove("posts", postTransform.id);
+
 			res.status(200).json(postTransform);
 		} catch (error) {
 			next(error);
