@@ -1,19 +1,31 @@
 const errorHandler = (err, req, res, next) => {
 	let code = 500;
 	let name = "InternalServerError";
-	let message = "Internal server error";
+	let messages = [];
 
 	switch (err.name) {
 		case "Unauthorized":
 			code = err.code;
 			name = err.name;
-			message = err.message;
+			messages = [err.message];
 			break;
 
 		case "NotFound":
 			code = err.code;
 			name = err.name;
-			message = err.message;
+			messages = [err.message];
+			break;
+
+		case "ValidationError":
+			let errors = [];
+
+			Object.keys(err.errors).forEach((key) => {
+				errors.push(err.errors[key].message);
+			});
+
+			code = 400;
+			name = "ValidationError";
+			message = errors;
 			break;
 
 		default:
@@ -22,7 +34,7 @@ const errorHandler = (err, req, res, next) => {
 	res.status(code).json({
 		code,
 		name,
-		message,
+		messages,
 	});
 };
 

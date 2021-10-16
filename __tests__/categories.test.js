@@ -67,7 +67,8 @@ describe("category test cases", () => {
 				.then(({ body, status }) => {
 					expect(status).toBe(401);
 					expect(body).toEqual(expect.any(Object));
-					expect(body).toHaveProperty("message", "Invalid token");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
 					done();
 				})
 				.catch((err) => {
@@ -77,11 +78,10 @@ describe("category test cases", () => {
 	});
 
 	describe("POST /categories", () => {
+		const categoryPayload = {
+			name: `Category name`,
+		};
 		test("[success - 201] POST /categories should be return an object and status code 201", (done) => {
-			const categoryPayload = {
-				name: `Category name`,
-			};
-
 			request(app)
 				.post("/categories")
 				.send(categoryPayload)
@@ -104,7 +104,25 @@ describe("category test cases", () => {
 				.then(({ body, status }) => {
 					expect(status).toBe(401);
 					expect(body).toEqual(expect.any(Object));
-					expect(body).toHaveProperty("message", "Invalid token");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+
+		test("[failed - 400] POST /categories without require fields should be return error and status code 400", (done) => {
+			request(app)
+				.post("/categories")
+				.set("token", token)
+				.send({ name: "" })
+				.then(({ body, status }) => {
+					expect(status).toBe(400);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
 					done();
 				})
 				.catch((err) => {
@@ -139,7 +157,8 @@ describe("category test cases", () => {
 					expect(status).toBe(401);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "Unauthorized");
-					expect(body).toHaveProperty("message", "Invalid token");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
 					done();
 				})
 				.catch((err) => {
@@ -155,7 +174,8 @@ describe("category test cases", () => {
 					expect(status).toBe(404);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "NotFound");
-					expect(body).toHaveProperty("message", "Category not found");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
 					done();
 				})
 				.catch((err) => {
@@ -177,7 +197,7 @@ describe("category test cases", () => {
 					expect(status).toBe(200);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("id");
-					expect(body).toHaveProperty("name", "Category name edited");
+					expect(body).toHaveProperty("name");
 					done();
 				})
 				.catch((err) => {
@@ -192,7 +212,8 @@ describe("category test cases", () => {
 					expect(status).toBe(401);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "Unauthorized");
-					expect(body).toHaveProperty("message", "Invalid token");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
 					done();
 				})
 				.catch((err) => {
@@ -208,7 +229,8 @@ describe("category test cases", () => {
 					expect(status).toBe(404);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "NotFound");
-					expect(body).toHaveProperty("message", "Category not found");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
 					done();
 				})
 				.catch((err) => {
@@ -246,7 +268,8 @@ describe("category test cases", () => {
 					expect(status).toBe(401);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "Unauthorized");
-					expect(body).toHaveProperty("message", "Invalid token");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
 					done();
 				})
 				.catch((err) => {
@@ -263,7 +286,8 @@ describe("category test cases", () => {
 					expect(status).toBe(404);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "NotFound");
-					expect(body).toHaveProperty("message", "Category not found");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
 					done();
 				})
 				.catch((err) => {
@@ -300,7 +324,8 @@ describe("category test cases", () => {
 					expect(status).toBe(401);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "Unauthorized");
-					expect(body).toHaveProperty("message", "Invalid token");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
 					done();
 				})
 				.catch((err) => {
@@ -316,7 +341,8 @@ describe("category test cases", () => {
 					expect(status).toBe(404);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "NotFound");
-					expect(body).toHaveProperty("message", "Category not found");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
 					done();
 				})
 				.catch((err) => {
