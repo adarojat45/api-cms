@@ -78,7 +78,9 @@ describe("User Test Cases", () => {
 				.then(({ body, status }) => {
 					expect(status).toBe(401);
 					expect(body).toEqual(expect.any(Object));
-					expect(body).toHaveProperty("message", "Email or password invalid");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
+					expect(body.messages[0]).toEqual("Email or password invalid");
 					done();
 				})
 				.catch((err) => {
