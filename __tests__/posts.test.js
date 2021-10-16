@@ -7,6 +7,7 @@ const UserModel = require("../models/userModel");
 const PostModel = require("../models/postModel");
 const Bcrypt = require("../helpers/bcrypt");
 const Jwt = require("../helpers/jwt");
+const { set } = require("../schemas/userSchema");
 
 const User = mongoose.model("User", UserSchema);
 const Post = mongoose.model("Post", PostSchema);
@@ -82,7 +83,9 @@ describe("Post test cases", () => {
 				.then(({ body, status }) => {
 					expect(status).toBe(401);
 					expect(body).toEqual(expect.any(Object));
-					expect(body).toHaveProperty("message", "Invalid token");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
+					expect(body.messages[0]).toEqual("Invalid token");
 					done();
 				})
 				.catch((err) => {
@@ -134,7 +137,33 @@ describe("Post test cases", () => {
 				.then(({ body, status }) => {
 					expect(status).toBe(401);
 					expect(body).toEqual(expect.any(Object));
-					expect(body).toHaveProperty("message", "Invalid token");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
+					expect(body.messages[0]).toEqual("Invalid token");
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+
+		test("[failed - 400] POST /posts without require fields should be return error and status code 400", (done) => {
+			request(app)
+				.post("/posts")
+				.send({
+					name: ``,
+					description: ``,
+					excerpt: ``,
+					tags: ["tags1", "tags2"],
+					categories: [],
+					isMakrdown: true,
+				})
+				.set("token", token)
+				.then(({ body, status }) => {
+					expect(status).toBe(400);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
 					done();
 				})
 				.catch((err) => {
@@ -177,7 +206,9 @@ describe("Post test cases", () => {
 					expect(status).toBe(401);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "Unauthorized");
-					expect(body).toHaveProperty("message", "Invalid token");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
+					expect(body.messages[0]).toEqual("Invalid token");
 					done();
 				})
 				.catch((err) => {
@@ -193,7 +224,9 @@ describe("Post test cases", () => {
 					expect(status).toBe(404);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "NotFound");
-					expect(body).toHaveProperty("message", "Post not found");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
+					expect(body.messages[0]).toEqual("Post not found");
 					done();
 				})
 				.catch((err) => {
@@ -246,7 +279,9 @@ describe("Post test cases", () => {
 					expect(status).toBe(401);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "Unauthorized");
-					expect(body).toHaveProperty("message", "Invalid token");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
+					expect(body.messages[0]).toEqual("Invalid token");
 					done();
 				})
 				.catch((err) => {
@@ -263,7 +298,9 @@ describe("Post test cases", () => {
 					expect(status).toBe(404);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "NotFound");
-					expect(body).toHaveProperty("message", "Post not found");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
+					expect(body.messages[0]).toEqual("Post not found");
 					done();
 				})
 				.catch((err) => {
@@ -301,7 +338,9 @@ describe("Post test cases", () => {
 					expect(status).toBe(401);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "Unauthorized");
-					expect(body).toHaveProperty("message", "Invalid token");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
+					expect(body.messages[0]).toEqual("Invalid token");
 					done();
 				})
 				.catch((err) => {
@@ -318,7 +357,9 @@ describe("Post test cases", () => {
 					expect(status).toBe(404);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "NotFound");
-					expect(body).toHaveProperty("message", "Post not found");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
+					expect(body.messages[0]).toEqual("Post not found");
 					done();
 				})
 				.catch((err) => {
@@ -356,7 +397,9 @@ describe("Post test cases", () => {
 					expect(status).toBe(401);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "Unauthorized");
-					expect(body).toHaveProperty("message", "Invalid token");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
+					expect(body.messages[0]).toEqual("Invalid token");
 					done();
 				})
 				.catch((err) => {
@@ -373,7 +416,9 @@ describe("Post test cases", () => {
 					expect(status).toBe(404);
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("name", "NotFound");
-					expect(body).toHaveProperty("message", "Post not found");
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
+					expect(body.messages[0]).toEqual("Post not found");
 					done();
 				})
 				.catch((err) => {
