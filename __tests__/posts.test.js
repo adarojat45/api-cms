@@ -146,6 +146,30 @@ describe("Post test cases", () => {
 					done(err);
 				});
 		});
+
+		test("[failed - 400] POST /posts without require fields should be return error and status code 400", (done) => {
+			request(app)
+				.post("/posts")
+				.send({
+					name: ``,
+					description: ``,
+					excerpt: ``,
+					tags: ["tags1", "tags2"],
+					categories: [],
+					isMakrdown: true,
+				})
+				.set("token", token)
+				.then(({ body, status }) => {
+					expect(status).toBe(400);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("messages");
+					expect(body.messages).toEqual(expect.any(Array));
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
 	});
 
 	describe("GET /posts/:id", () => {
