@@ -123,6 +123,7 @@ describe("category test cases", () => {
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("messages");
 					expect(body.messages).toEqual(expect.any(Array));
+					expect(body.messages[0]).toEqual(expect.any(String));
 					done();
 				})
 				.catch((err) => {
