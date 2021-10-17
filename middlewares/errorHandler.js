@@ -26,6 +26,7 @@ const errorHandler = (err, req, res, next) => {
 			break;
 
 		default:
+			messages = ["Internal server error"];
 			break;
 	}
 	res.status(code).json({
