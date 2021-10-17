@@ -17,15 +17,12 @@ const errorHandler = (err, req, res, next) => {
 			break;
 
 		case "ValidationError":
-			let errors = [];
-
 			Object.keys(err.errors).forEach((key) => {
-				errors.push(err.errors[key].message);
+				messages.push(err.errors[key].message);
 			});
 
 			code = 400;
 			name = "ValidationError";
-			message = errors;
 			break;
 
 		default:
