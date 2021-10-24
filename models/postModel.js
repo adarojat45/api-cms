@@ -14,9 +14,11 @@ class PostModel {
 
 	static findAll = async (condition = {}, filter = {}) => {
 		try {
-			return await Post.find({ ...condition, isDeleted: false }).populate(
-				"_categories"
-			);
+			return await Post.find({ ...condition, isDeleted: false })
+				.populate("_categories")
+				.sort({
+					createdAt: "desc",
+				});
 		} catch (error) {
 			throw error;
 		}
