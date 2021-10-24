@@ -14,7 +14,9 @@ class CategoryModel {
 
 	static findAll = async (condition = {}, filter = {}) => {
 		try {
-			return await Category.find({ ...condition, isDeleted: false });
+			return await Category.find({ ...condition, isDeleted: false }).sort({
+				createdAt: "desc",
+			});
 		} catch (error) {
 			throw error;
 		}
