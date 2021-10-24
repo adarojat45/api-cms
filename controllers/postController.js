@@ -4,6 +4,7 @@ const PostTransformer = require("../transformers/postTransformer");
 const moment = require("moment");
 const Algolia = require("../services/algolia");
 const Netlify = require("../services/netlify");
+const slugify = require("slugify");
 
 class PostController {
 	static create = async (req, res, next) => {
@@ -17,7 +18,7 @@ class PostController {
 				excerpt,
 			} = req.body;
 			const _categories = categories.map((category) => category.id);
-			let slug = name.toLowerCase().replace(" ", "-");
+			let slug = slugify(name, "-");
 			const checkPost = await PostModel.findOne({ slug });
 			if (checkPost) slug = slug + "-" + moment().format("YYYYMMDDHHss");
 			const newPost = await PostModel.create({
@@ -83,9 +84,12 @@ class PostController {
 				excerpt,
 			} = req.body;
 			const _categories = categories.map((category) => category.id);
+			let slug = slugify(name, "-");
+			const checkPost = await PostModel.findOne({ slug });
+			if (checkPost) slug = slug + "-" + moment().format("YYYYMMDDHHss");
 			const post = await PostModel.update(
 				{ _id: id },
-				{ name, description, tags, _categories, isMarkdown, excerpt }
+				{ name, slug, description, tags, _categories, isMarkdown, excerpt }
 			);
 			if (!post)
 				throw {
