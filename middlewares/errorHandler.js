@@ -25,6 +25,14 @@ const errorHandler = (err, req, res, next) => {
 			name = "ValidationError";
 			break;
 
+		case "MongoServerError":
+			Object.keys(err.keyValue).forEach((key) => {
+				messages.push(`${key} must be unique`);
+			});
+			code = 400;
+			name = "MongoServerError";
+			break;
+
 		default:
 			messages = ["Internal server error"];
 			break;
