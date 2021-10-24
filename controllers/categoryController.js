@@ -1,12 +1,13 @@
 const CategoryModel = require("../models/categoryModel");
 const CategoryTransformer = require("../transformers/categoryTransformer");
 const moment = require("moment");
+const slugify = require("slugify");
 
 class CategoryController {
 	static create = async (req, res, next) => {
 		try {
 			const { name } = req.body;
-			let slug = name.toLowerCase().replace(" ", "-");
+			let slug = slugify(name, "-");
 			const checkCategory = await CategoryModel.findOne({ slug });
 			if (checkCategory) slug = slug + "-" + moment().format("YYYYMMDDHHss");
 			const category = await CategoryModel.create({ name, slug, isActive: true });
@@ -50,7 +51,10 @@ class CategoryController {
 		try {
 			const { id } = req.params;
 			const { name } = req.body;
-			const category = await CategoryModel.update({ _id: id }, { name });
+			let slug = slugify(name, "-");
+			const checkCategory = await CategoryModel.findOne({ slug });
+			if (checkCategory) slug = slug + "-" + moment().format("YYYYMMDDHHss");
+			const category = await CategoryModel.update({ _id: id }, { name, slug });
 			if (!category)
 				throw {
 					name: "NotFound",
