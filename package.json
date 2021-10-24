@@ -29,7 +29,8 @@
 		"jsonwebtoken": "^8.5.1",
 		"moment": "^2.29.1",
 		"mongoose": "^6.0.7",
-		"morphism": "^1.12.3"
+		"morphism": "^1.12.3",
+		"slugify": "^1.6.1"
 	},
 	"devDependencies": {
 		"jest": "^27.2.5",
