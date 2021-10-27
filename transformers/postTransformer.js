@@ -8,6 +8,7 @@ class PostTransformer {
 			slug: "slug",
 			excerpt: "excerpt",
 			tags: "tags",
+			views: "views",
 			categories: (iteratee) => {
 				return iteratee._categories.map((category) => {
 					const { name, _id } = category;
@@ -36,6 +37,7 @@ class PostTransformer {
 			excerpt: "excerpt",
 			description: "description",
 			tags: "tags",
+			views: "views",
 			categories: (iteratee) => {
 				return iteratee._categories.map((category) => {
 					const { name, _id } = category;
