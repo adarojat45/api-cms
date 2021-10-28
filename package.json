@@ -6,7 +6,8 @@
 	"scripts": {
 		"test": "NODE_ENV=test jest --detectOpenHandles --runInBand --verbose  --forceExit --coverage",
 		"test_dev": "NODE_ENV=test jest --detectOpenHandles --runInBand --verbose  --forceExit --coverage --watchAll",
-		"dev": "nodemon bin/www"
+		"dev": "nodemon bin/www",
+		"serve": "node bin/www"
 	},
 	"repository": {
 		"type": "git",
