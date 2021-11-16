@@ -65,8 +65,13 @@ class PostController {
 					message: "Post not found",
 					code: 404,
 				};
+
+			const relatedPosts = await PostModel.findAll({
+				tags: { $in: post.tags },
+			});
 			const postTransform = PostTransformer.detail(post);
-			res.status(200).json(postTransform);
+			const postsTransform = PostTransformer.list(relatedPosts);
+			res.status(200).json({ ...postTransform, relatedPosts: postsTransform });
 		} catch (error) {
 			next(error);
 		}
@@ -131,7 +136,7 @@ class PostController {
 			} else {
 				await Algolia.remove("posts", postTransform.id);
 			}
-			
+
 			await Netlify.buildHook();
 
 			res.status(200).json(postTransform);
