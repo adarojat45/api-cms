@@ -16,6 +16,18 @@ const errorHandler = (err, req, res, next) => {
 			messages = [err.message];
 			break;
 
+		case "RetryError":
+			code = 500;
+			name = err.name;
+			messages = [err.message];
+			break;
+
+		case "NetlifyErr":
+			code = 500;
+			name = err.name;
+			messages = [err.message];
+			break;
+
 		case "ValidationError":
 			Object.keys(err.errors).forEach((key) => {
 				messages.push(err.errors[key].message);

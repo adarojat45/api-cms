@@ -8,12 +8,20 @@ const PostModel = require("../models/postModel");
 const Bcrypt = require("../helpers/bcrypt");
 const Jwt = require("../helpers/jwt");
 const { set } = require("../schemas/userSchema");
+const Algolia = require("../services/algolia");
+const Netlify = require("../services/netlify");
 
 const User = mongoose.model("User", UserSchema);
 const Post = mongoose.model("Post", PostSchema);
 
 let token = "";
 let posts = [];
+
+/** 
+ * algolia error
+ * name: 'RetryError',
+      message: 'Unreachable hosts - your application id may be incorrect. If the error persists, contact support@algolia.com.',
+*/
 
 beforeAll(async () => {
 	const userPayload = {
@@ -46,6 +54,10 @@ afterAll(async () => {
 	await User.deleteMany();
 	await Post.deleteMany();
 	mongoose.disconnect();
+});
+
+beforeEach(() => {
+	jest.restoreAllMocks();
 });
 
 describe("Post test cases", () => {
@@ -313,7 +325,15 @@ describe("Post test cases", () => {
 		const postPayload = {
 			isActive: true,
 		};
+
 		test("[success - 200] PATCH /posts/:id/updateStatus should be return an object and status code 200", (done) => {
+			jest.spyOn(Algolia, "add").mockResolvedValueOnce({
+				objectID: "",
+				taskID: 5127488064001,
+			});
+
+			jest.spyOn(Netlify, "buildHook").mockResolvedValueOnce({});
+
 			request(app)
 				.patch(`/posts/${posts[0].id}/updateStatus`)
 				.set("token", token)
@@ -323,6 +343,59 @@ describe("Post test cases", () => {
 					expect(body).toEqual(expect.any(Object));
 					expect(body).toHaveProperty("id");
 					expect(body).toHaveProperty("isActive", true);
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+
+		test("[failed - 500] PATCH /posts/:id/updateStatus should be return error with an object and status code 500 when can't connect to algolia service", (done) => {
+			jest.spyOn(Algolia, "add").mockRejectedValueOnce({
+				name: "RetryError",
+				message:
+					"Unreachable hosts - your application id may be incorrect. If the error persists, contact support@algolia.com.",
+			});
+
+			jest.spyOn(Netlify, "buildHook").mockResolvedValueOnce({});
+
+			request(app)
+				.patch(`/posts/${posts[0].id}/updateStatus`)
+				.set("token", token)
+				.send(postPayload)
+				.then(({ status, body }) => {
+					expect(status).toBe(500);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("name");
+					expect(body).toHaveProperty("messages");
+					done();
+				})
+				.catch((err) => {
+					done(err);
+				});
+		});
+
+		test("[failed - 500] PATCH /posts/:id/updateStatus should be return error with an object and status code 500 when can't connect to netlify service", (done) => {
+			jest.spyOn(Algolia, "add").mockResolvedValueOnce({
+				objectID: "",
+				taskID: 5127488064001,
+			});
+
+			jest.spyOn(Netlify, "buildHook").mockRejectedValueOnce({
+				name: "NetlifyErr",
+				message: "",
+				code: "",
+			});
+
+			request(app)
+				.patch(`/posts/${posts[0].id}/updateStatus`)
+				.set("token", token)
+				.send(postPayload)
+				.then(({ status, body }) => {
+					expect(status).toBe(500);
+					expect(body).toEqual(expect.any(Object));
+					expect(body).toHaveProperty("name");
+					expect(body).toHaveProperty("messages");
 					done();
 				})
 				.catch((err) => {
