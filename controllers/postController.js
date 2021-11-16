@@ -123,18 +123,16 @@ class PostController {
 				};
 			const postTransform = PostTransformer.list(post);
 
-			// if (process.env.ALGOLIA_APP_ID && process.env.ALGOLIA_API_KEY) {
-				if (isActive) {
-					await Algolia.add("posts", {
-						...postTransform,
-						objectID: postTransform.id,
-					});
-				} else {
-					await Algolia.remove("posts", postTransform.id);
-				}
-			// }
-			// if (process.env.NETLIFY_API_URL && process.env.NETLIFY_WEBHOOK_KEY)
-				await Netlify.buildHook();
+			if (isActive) {
+				await Algolia.add("posts", {
+					...postTransform,
+					objectID: postTransform.id,
+				});
+			} else {
+				await Algolia.remove("posts", postTransform.id);
+			}
+			
+			await Netlify.buildHook();
 
 			res.status(200).json(postTransform);
 		} catch (error) {
