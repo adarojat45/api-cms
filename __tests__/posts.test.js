@@ -204,21 +204,6 @@ describe("Post test cases", () => {
 					expect(body).toHaveProperty("isActive");
 					expect(body).toHaveProperty("isDeleted");
 					expect(body).toHaveProperty("description");
-					expect(body).toHaveProperty("relatedPosts");
-					expect(body.relatedPosts).toEqual(expect.any(Array));
-					expect(body.relatedPosts[0]).toEqual(expect.any(Object));
-					expect(body.relatedPosts[0]).toHaveProperty("id");
-					expect(body.relatedPosts[0]).toHaveProperty("name");
-					expect(body.relatedPosts[0]).toHaveProperty("excerpt");
-					expect(body.relatedPosts[0]).toHaveProperty("tags");
-					expect(body.relatedPosts[0].tags).toEqual(expect.any(Array));
-					expect(body.relatedPosts[0].tags[0]).toEqual(expect.any(String));
-					expect(body.relatedPosts[0]).toHaveProperty("isMarkdown");
-					expect(body.relatedPosts[0]).toHaveProperty("categories");
-					expect(body.relatedPosts[0].categories).toEqual(expect.any(Array));
-					expect(body.relatedPosts[0]).toHaveProperty("isActive");
-					expect(body.relatedPosts[0]).toHaveProperty("isDeleted");
-					expect(body.relatedPosts[0]).not.toHaveProperty("description");
 					done();
 				})
 				.catch((err) => {
