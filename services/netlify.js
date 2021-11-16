@@ -10,7 +10,11 @@ class Netlify {
 			});
 			return data;
 		} catch (error) {
-			throw error;
+			throw {
+				name: "NetlifyErr",
+				message: error.response.data,
+				code: error.response.status,
+			};
 		}
 	};
 }
